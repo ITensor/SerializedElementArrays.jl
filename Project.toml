@@ -1,0 +1,13 @@
+name = "SerializedElementArrays"
+uuid = "d3ce8812-9567-47e9-a7b5-65a6d70a3065"
+authors = ["Matthew Fishman <mfishman@flatironinstitute.org> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
