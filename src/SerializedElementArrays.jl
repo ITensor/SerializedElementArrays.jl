@@ -2,8 +2,6 @@ module SerializedElementArrays
 
 using Serialization
 
-export DiskVector, DiskMatrix, DiskArray, disk
-
 curdir_tempname() = ".tmp"
 
 # An Array where each element is written to disk
@@ -20,11 +18,6 @@ end
 
 const SerializedElementVector{T} = SerializedElementArray{T,1}
 const SerializedElementMatrix{T} = SerializedElementArray{T,2}
-
-# Shorthand for SerializedElementArray
-const DiskArray{T,N} = SerializedElementArray{T,N}
-const DiskMatrix{T} = SerializedElementMatrix{T}
-const DiskVector{T} = SerializedElementVector{T}
 
 pathname(d::SerializedElementArray) = d.pathname
 
@@ -75,7 +68,9 @@ SerializedElementArray{<:Any,N}(; kw...) where {N} = SerializedElementArray{Any,
 function SerializedElementArray{T,N}(A::AbstractArray; kw...) where {T,N}
   d = SerializedElementArray{T,N}(undef, size(A); kw...)
   for I in eachindex(A)
-    d[I] = A[I]
+    if isassigned(A, I)
+      d[I] = A[I]
+    end
   end
   return d
 end

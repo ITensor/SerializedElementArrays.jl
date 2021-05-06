@@ -1,9 +1,11 @@
 using SerializedElementArrays
 using Test
 
+using SerializedElementArrays: disk
+
 @testset "SerializedElementArrays.jl" begin
-  @testset "DiskVector" begin
-    d = DiskVector()
+  @testset "SerializedElementArrays.SerializedElementVector" begin
+    d = SerializedElementArrays.SerializedElementVector()
     @test size(d) == (0,)
     @test length(d) == 0
     @test ndims(d) == 1
@@ -12,7 +14,7 @@ using Test
     @test ispath(SerializedElementArrays.pathname(d))
     @test !isfile(SerializedElementArrays.filename(d, 1))
 
-    d = DiskVector(undef, 4)
+    d = SerializedElementArrays.SerializedElementVector(undef, 4)
     @test size(d) == (4,)
     @test length(d) == 4
     @test ndims(d) == 1
@@ -35,7 +37,7 @@ using Test
     @test !isassigned(d, 4)
     @test_throws UndefRefError d[4]
 
-    d = DiskVector{Int}(undef, 4)
+    d = SerializedElementArrays.SerializedElementVector{Int}(undef, 4)
     @test size(d) == (4,)
     @test length(d) == 4
     @test ndims(d) == 1
@@ -52,7 +54,7 @@ using Test
     @test d[1] == 1
     @test_throws InexactError d[2] = 1.2
 
-    d = DiskVector(1:6)
+    d = SerializedElementArrays.SerializedElementVector(1:6)
     @test size(d) == (6,)
     @test length(d) == 6
     @test ndims(d) == 1
@@ -65,7 +67,7 @@ using Test
       @test d[n] == n
     end
 
-    d = DiskVector{Float64}(1:6)
+    d = SerializedElementArrays.SerializedElementVector{Float64}(1:6)
     @test size(d) == (6,)
     @test length(d) == 6
     @test ndims(d) == 1
@@ -102,19 +104,19 @@ using Test
     @test_throws MethodError Matrix(d)
 
     d2 = disk(a)
-    @test d2 isa DiskVector{ComplexF64}
+    @test d2 isa SerializedElementArrays.SerializedElementVector{ComplexF64}
     @test size(d2) == (6,)
     @test SerializedElementArrays.pathname(d) ≠ SerializedElementArrays.pathname(d2)
   end
 
-  @testset "DiskMatrix" begin
-    d = DiskMatrix()
+  @testset "SerializedElementArrays.SerializedElementMatrix" begin
+    d = SerializedElementArrays.SerializedElementMatrix()
     @test size(d) == (0, 0)
     @test length(d) == 0
     @test ndims(d) == 2
     @test eltype(d) == Any
 
-    d = DiskMatrix(undef, 4, 5)
+    d = SerializedElementArrays.SerializedElementMatrix(undef, 4, 5)
     @test size(d) == (4, 5)
     @test length(d) == 20
     @test ndims(d) == 2
@@ -142,7 +144,7 @@ using Test
     @test !isassigned(d, 4)
     @test_throws UndefRefError d[4]
 
-    d = DiskMatrix{Int}(undef, 4, 5)
+    d = SerializedElementArrays.SerializedElementMatrix{Int}(undef, 4, 5)
     @test size(d) == (4, 5)
     @test length(d) == 20
     @test ndims(d) == 2
@@ -162,7 +164,7 @@ using Test
     @test d[5] == 1
     @test_throws InexactError d[2, 2] = 1.2
 
-    d = DiskMatrix(reshape(1:6, 2, 3))
+    d = SerializedElementArrays.SerializedElementMatrix(reshape(1:6, 2, 3))
     @test size(d) == (2, 3)
     @test length(d) == 6
     @test ndims(d) == 2
@@ -176,7 +178,7 @@ using Test
       @test d[n] isa Int64
     end
 
-    d = DiskMatrix{Float64}(reshape(1:6, 2, 3))
+    d = SerializedElementArrays.SerializedElementMatrix{Float64}(reshape(1:6, 2, 3))
     @test size(d) == (2, 3)
     @test length(d) == 6
     @test ndims(d) == 2
@@ -205,18 +207,18 @@ using Test
     end
 
     d2 = disk(a)
-    @test d2 isa DiskMatrix{Float64}
+    @test d2 isa SerializedElementArrays.SerializedElementMatrix{Float64}
     @test size(d2) == (2, 3)
     @test SerializedElementArrays.pathname(d) ≠ SerializedElementArrays.pathname(d2)
   end
 
-  @testset "DiskArray" begin
-    @test_throws MethodError DiskArray()
-    @test_throws MethodError DiskArray{Float64}()
+  @testset "SerializedElementArrays.SerializedElementArray" begin
+    @test_throws MethodError SerializedElementArrays.SerializedElementArray()
+    @test_throws MethodError SerializedElementArrays.SerializedElementArray{Float64}()
 
     # TODO: this also fails for Array, should we support it?
-    @test_throws MethodError DiskArray(undef, 2, 3, 4)
-    d = DiskArray{Any}(undef, 2, 3, 4)
+    @test_throws MethodError SerializedElementArrays.SerializedElementArray(undef, 2, 3, 4)
+    d = SerializedElementArrays.SerializedElementArray{Any}(undef, 2, 3, 4)
     @test size(d) == (2, 3, 4)
     @test length(d) == 24
     @test ndims(d) == 3
@@ -242,7 +244,7 @@ using Test
     @test !isassigned(d, 4)
     @test_throws UndefRefError d[4]
 
-    d = DiskArray{Int}(undef, 2, 3, 4)
+    d = SerializedElementArrays.SerializedElementArray{Int}(undef, 2, 3, 4)
     @test size(d) == (2, 3, 4)
     @test length(d) == 24
     @test ndims(d) == 3
@@ -259,7 +261,7 @@ using Test
     @test d[1, 2, 3] == 1
     @test_throws InexactError d[2, 2, 4] = 1.2
 
-    d = DiskArray(reshape(1:24, 2, 3, 4))
+    d = SerializedElementArrays.SerializedElementArray(reshape(1:24, 2, 3, 4))
     @test size(d) == (2, 3, 4)
     @test length(d) == 24
     @test ndims(d) == 3
@@ -273,7 +275,7 @@ using Test
       @test d[n] isa Int64
     end
 
-    d = DiskArray{Float64}(reshape(1:24, 2, 3, 4))
+    d = SerializedElementArrays.SerializedElementArray{Float64}(reshape(1:24, 2, 3, 4))
     @test size(d) == (2, 3, 4)
     @test length(d) == 24
     @test ndims(d) == 3
@@ -302,7 +304,7 @@ using Test
     end
 
     d2 = disk(a)
-    @test d2 isa DiskArray{Float64, 3}
+    @test d2 isa SerializedElementArrays.SerializedElementArray{Float64, 3}
     @test size(d2) == (2, 3, 4)
     @test SerializedElementArrays.pathname(d) ≠ SerializedElementArrays.pathname(d2)
   end
@@ -319,5 +321,22 @@ using Test
     d23 = d[end, end]
     @test size(d23) == (3, 4)
     @test d23 isa Matrix{Float64}
+  end
+
+  @testset "Undefined references" begin
+    a = Array{Matrix{Float64}}(undef, 2, 3)
+    d = disk(a)
+    @test size(d) == (2, 3)
+    @test !isassigned(a, 1, 2)
+    @test !isassigned(d, 1, 2)
+    @test isempty(readdir(SerializedElementArrays.pathname(d)))
+    x = randn(5, 5)
+    d[1, 2] = x
+    @test x == d[1, 2]
+    @test length(readdir(SerializedElementArrays.pathname(d))) == 1
+    y = randn(3, 4)
+    d[2, 3] = y
+    @test y == d[2, 3]
+    @test length(readdir(SerializedElementArrays.pathname(d))) == 2
   end
 end
