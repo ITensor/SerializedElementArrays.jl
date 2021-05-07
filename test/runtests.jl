@@ -304,7 +304,7 @@ using SerializedElementArrays: disk
     end
 
     d2 = disk(a)
-    @test d2 isa SerializedElementArrays.SerializedElementArray{Float64, 3}
+    @test d2 isa SerializedElementArrays.SerializedElementArray{Float64,3}
     @test size(d2) == (2, 3, 4)
     @test SerializedElementArrays.pathname(d) ≠ SerializedElementArrays.pathname(d2)
   end
