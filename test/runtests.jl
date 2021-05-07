@@ -10,7 +10,7 @@ using SerializedElementArrays: disk
     @test length(d) == 0
     @test ndims(d) == 1
     @test eltype(d) == Any
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     @test !isfile(SerializedElementArrays.filename(d, 1))
 
@@ -19,7 +19,7 @@ using SerializedElementArrays: disk
     @test length(d) == 4
     @test ndims(d) == 1
     @test eltype(d) == Any
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test !isfile(SerializedElementArrays.filename(d, n))
@@ -42,7 +42,7 @@ using SerializedElementArrays: disk
     @test length(d) == 4
     @test ndims(d) == 1
     @test eltype(d) == Int
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test !isfile(SerializedElementArrays.filename(d, n))
@@ -59,7 +59,7 @@ using SerializedElementArrays: disk
     @test length(d) == 6
     @test ndims(d) == 1
     @test eltype(d) == Int
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test isfile(SerializedElementArrays.filename(d, n))
@@ -72,7 +72,7 @@ using SerializedElementArrays: disk
     @test length(d) == 6
     @test ndims(d) == 1
     @test eltype(d) == Float64
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test isfile(SerializedElementArrays.filename(d, n))
@@ -121,7 +121,7 @@ using SerializedElementArrays: disk
     @test length(d) == 20
     @test ndims(d) == 2
     @test eltype(d) == Any
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test !isfile(SerializedElementArrays.filename(d, n))
@@ -149,7 +149,7 @@ using SerializedElementArrays: disk
     @test length(d) == 20
     @test ndims(d) == 2
     @test eltype(d) == Int
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test !isfile(SerializedElementArrays.filename(d, n))
@@ -169,7 +169,7 @@ using SerializedElementArrays: disk
     @test length(d) == 6
     @test ndims(d) == 2
     @test eltype(d) == Int
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test isfile(SerializedElementArrays.filename(d, n))
@@ -183,7 +183,7 @@ using SerializedElementArrays: disk
     @test length(d) == 6
     @test ndims(d) == 2
     @test eltype(d) == Float64
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test isfile(SerializedElementArrays.filename(d, n))
@@ -223,7 +223,7 @@ using SerializedElementArrays: disk
     @test length(d) == 24
     @test ndims(d) == 3
     @test eltype(d) == Any
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test !isfile(SerializedElementArrays.filename(d, n))
@@ -249,7 +249,7 @@ using SerializedElementArrays: disk
     @test length(d) == 24
     @test ndims(d) == 3
     @test eltype(d) == Int
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test !isfile(SerializedElementArrays.filename(d, n))
@@ -266,7 +266,7 @@ using SerializedElementArrays: disk
     @test length(d) == 24
     @test ndims(d) == 3
     @test eltype(d) == Int
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test isfile(SerializedElementArrays.filename(d, n))
@@ -280,7 +280,7 @@ using SerializedElementArrays: disk
     @test length(d) == 24
     @test ndims(d) == 3
     @test eltype(d) == Float64
-    @test startswith(SerializedElementArrays.pathname(d), joinpath(tempdir(), "jl_"))
+    @test startswith(SerializedElementArrays.pathname(d), tempdir())
     @test ispath(SerializedElementArrays.pathname(d))
     for n in 1:length(d)
       @test isfile(SerializedElementArrays.filename(d, n))
