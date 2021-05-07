@@ -11,10 +11,14 @@ end
 function temppath(path::AbstractString=tempdir(); cleanup=cleanup_default())
   if VERSION < v"1.4"
     if cleanup
-      error("Previous to Julia 1.4, `tempname` doesn't support the `cleanup` keyword argument so `cleanup` must be set to false.")
+      error(
+        "Previous to Julia 1.4, `tempname` doesn't support the `cleanup` keyword argument so `cleanup` must be set to false.",
+      )
     end
     if path ≠ tempdir()
-      error("`path` was specified as $path. Previous to Julia 1.4, `tempname` doesn't support customizing the path, `path` must be `tempdir() = $(tempdir())`.")
+      error(
+        "`path` was specified as $path. Previous to Julia 1.4, `tempname` doesn't support customizing the path, `path` must be `tempdir() = $(tempdir())`.",
+      )
     end
     return tempname()
   end
@@ -25,7 +29,9 @@ end
 struct SerializedElementArray{T,N} <: AbstractArray{T,N}
   pathname::String
   dims::NTuple{N,Int}
-  function SerializedElementArray{T,N}(::UndefInitializer, d::NTuple{N,Integer}; cleanup=cleanup_default(), path=tempdir()) where {T,N}
+  function SerializedElementArray{T,N}(
+    ::UndefInitializer, d::NTuple{N,Integer}; cleanup=cleanup_default(), path=tempdir()
+  ) where {T,N}
     mkpath(path)
     pathname = temppath(path; cleanup=cleanup)
     mkpath(pathname)
@@ -74,13 +80,37 @@ function Base.setindex!(d::SerializedElementArray, v, I...)
 end
 
 # Constructors with undefined values
-SerializedElementArray{T,N}(::UndefInitializer, d::Vararg{Integer,N}; kw...) where {T,N} = SerializedElementArray{T,N}(undef, d; kw...)
-SerializedElementArray{T,N}(; kw...) where {T,N} = SerializedElementArray{T,N}(undef, ntuple(_ -> 0, Val(N)); kw...)
-SerializedElementArray{T}(::UndefInitializer, d::NTuple{N,Integer}; kw...) where {T,N} = SerializedElementArray{T,N}(undef, d; kw...)
-SerializedElementArray{T}(::UndefInitializer, d::Vararg{Integer,N}; kw...) where {T,N} = SerializedElementArray{T,N}(undef, d; kw...)
-SerializedElementArray{<:Any,N}(::UndefInitializer, d::NTuple{N,Integer}; kw...) where {N} = SerializedElementArray{Any,N}(undef, d; kw...)
-SerializedElementArray{<:Any,N}(::UndefInitializer, d::Vararg{Integer,N}; kw...) where {N} = SerializedElementArray{Any,N}(undef, d; kw...)
-SerializedElementArray{<:Any,N}(; kw...) where {N} = SerializedElementArray{Any,N}(undef, ntuple(_ -> 0, Val(N)); kw...)
+function SerializedElementArray{T,N}(
+  ::UndefInitializer, d::Vararg{Integer,N}; kw...
+) where {T,N}
+  return SerializedElementArray{T,N}(undef, d; kw...)
+end
+function SerializedElementArray{T,N}(; kw...) where {T,N}
+  return SerializedElementArray{T,N}(undef, ntuple(_ -> 0, Val(N)); kw...)
+end
+function SerializedElementArray{T}(
+  ::UndefInitializer, d::NTuple{N,Integer}; kw...
+) where {T,N}
+  return SerializedElementArray{T,N}(undef, d; kw...)
+end
+function SerializedElementArray{T}(
+  ::UndefInitializer, d::Vararg{Integer,N}; kw...
+) where {T,N}
+  return SerializedElementArray{T,N}(undef, d; kw...)
+end
+function SerializedElementArray{<:Any,N}(
+  ::UndefInitializer, d::NTuple{N,Integer}; kw...
+) where {N}
+  return SerializedElementArray{Any,N}(undef, d; kw...)
+end
+function SerializedElementArray{<:Any,N}(
+  ::UndefInitializer, d::Vararg{Integer,N}; kw...
+) where {N}
+  return SerializedElementArray{Any,N}(undef, d; kw...)
+end
+function SerializedElementArray{<:Any,N}(; kw...) where {N}
+  return SerializedElementArray{Any,N}(undef, ntuple(_ -> 0, Val(N)); kw...)
+end
 
 function SerializedElementArray{T,N}(A::AbstractArray; kw...) where {T,N}
   d = SerializedElementArray{T,N}(undef, size(A); kw...)
@@ -91,9 +121,15 @@ function SerializedElementArray{T,N}(A::AbstractArray; kw...) where {T,N}
   end
   return d
 end
-SerializedElementArray{T}(A::AbstractArray{<:Any,N}; kw...) where {T,N} = SerializedElementArray{T,N}(A; kw...)
-SerializedElementArray{<:Any,N}(A::AbstractArray{T}; kw...) where {T,N} = SerializedElementArray{T,N}(A; kw...)
-SerializedElementArray(A::AbstractArray{T,N}; kw...) where {T,N} = SerializedElementArray{T,N}(A; kw...)
+function SerializedElementArray{T}(A::AbstractArray{<:Any,N}; kw...) where {T,N}
+  return SerializedElementArray{T,N}(A; kw...)
+end
+function SerializedElementArray{<:Any,N}(A::AbstractArray{T}; kw...) where {T,N}
+  return SerializedElementArray{T,N}(A; kw...)
+end
+function SerializedElementArray(A::AbstractArray{T,N}; kw...) where {T,N}
+  return SerializedElementArray{T,N}(A; kw...)
+end
 
 """
     SerializedElementArrays.disk(array::AbstractArray; cleanup=true, path=tempdir())
