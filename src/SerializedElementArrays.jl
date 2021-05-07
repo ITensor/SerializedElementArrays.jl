@@ -2,15 +2,32 @@ module SerializedElementArrays
 
 using Serialization
 
-curdir_tempname() = ".tmp"
+# tempname only supports cleanup since Julia 1.4
+function cleanup_default()
+  return VERSION >= v"1.4"
+end
+
+# Like `tempname()` but compatible with Julia versions prior to 1.4
+function temppath(path::AbstractString=tempdir(); cleanup=cleanup_default())
+  if VERSION < v"1.4"
+    if cleanup
+      error("Previous to Julia 1.4, `tempname` doesn't support the `cleanup` keyword argument so `cleanup` must be set to false.")
+    end
+    if path ≠ tempdir()
+      error("`path` was specified as $path. Previous to Julia 1.4, `tempname` doesn't support customizing the path, `path` must be `tempdir() = $(tempdir())`.")
+    end
+    return tempname()
+  end
+  return tempname(path; cleanup=cleanup)
+end
 
 # An Array where each element is written to disk
 struct SerializedElementArray{T,N} <: AbstractArray{T,N}
   pathname::String
   dims::NTuple{N,Int}
-  function SerializedElementArray{T,N}(::UndefInitializer, d::NTuple{N,Integer}; cleanup=true) where {T,N}
-    mkpath(curdir_tempname())
-    pathname = tempname(curdir_tempname(); cleanup=cleanup)
+  function SerializedElementArray{T,N}(::UndefInitializer, d::NTuple{N,Integer}; cleanup=cleanup_default(), path=tempdir()) where {T,N}
+    mkpath(path)
+    pathname = temppath(path; cleanup=cleanup)
     mkpath(pathname)
     return new{T,N}(pathname, d)
   end
@@ -78,6 +95,25 @@ SerializedElementArray{T}(A::AbstractArray{<:Any,N}; kw...) where {T,N} = Serial
 SerializedElementArray{<:Any,N}(A::AbstractArray{T}; kw...) where {T,N} = SerializedElementArray{T,N}(A; kw...)
 SerializedElementArray(A::AbstractArray{T,N}; kw...) where {T,N} = SerializedElementArray{T,N}(A; kw...)
 
-disk(A::AbstractArray; kw...) = SerializedElementArray(A; kw...)
+"""
+    SerializedElementArrays.disk(array::AbstractArray; cleanup=true, path=tempdir())
+
+Convert the `AbstractArray` `array` to an array saved on disk of type `SerializedElementArrays.SerializedElementArray`. Each element of the array will be saved in serialized format to an individual file in a randomly generated directory.
+
+If an `array` of type `SerializedElementArray` is input, this will simply return the original `array` (it acts like a conversion to type `SerializedElementArray`), ignoring the keyword arguments.
+
+# Arguments
+- `array::AbstractArray`: the array to convert to a `SerializedElementArrays.SerializedElementArray` stored on disk.
+
+# Keywords
+- `cleanup::Bool=true`: controls whether the process attempts to delete the returned path automatically when the process exits.
+- `path=tempdir()`: the root of the path where a temporary directory will be made where the elements of the array will be saved. A directory with a random name assigned by the Base function `tempname` will be used.
+
+!!! compat "Julia 1.4"
+    This makes use of the Julia function `tempname` to create a temporary directory where the elements of the array will be saved. `tempname` only supports customizing the path and automatically cleaning up the files in Julia 1.4 and later. The `path` and `cleanup` arguments are only supported in Julia 1.4 and later, and in those previous versions they will default to `cleanup=false` and `path=tempdir()`.
+"""
+disk(array::AbstractArray; kw...) = SerializedElementArray(array; kw...)
+
+disk(array::SerializedElementArray; kw...) = array
 
 end
