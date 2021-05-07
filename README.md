@@ -46,6 +46,11 @@ When initialized from undefined `Array`s, no files are created, but elements can
 
 Internally, files are written to a path in the current directory created by `tempname(".tmp"; cleanup=true)`. Therefore, the files are cleaned up once the Julia process finishes (see the Julia documentation for `tempname`). You can use `disk(a; cleanup=false)` to keep the files after the process ends. However, note that because serialization is used (with the standard library module `Serialization`), in general it is not guaranteed that the files can read and written by different versions of Julia, or an instance of Julia with a different system image. The aim of this package is to make it easier to perform calculations with collections of very large objects which collectively might not fit in memory and are not read and written very often during the calculation, and which are not necessarily needed long term after the calculation finishes. For more stable reading and writing across different versions of Julia, using packages like `HDF5`, `JLD`, or `JLD2`.
 
+## Future plans
+
+- Automate caching of recently accessed elements to speed up repeated access of the same elements. This could use something like [LRUCache.jl](https://github.com/JuliaCollections/LRUCache.jl).
+- Make a dictionary interface through a type `SerializedElementDict`. A design question would be if the file structure should be "nested" or "shallow", i.e. when saving nested dictionaries, should the dictionaries themselves be serialized and saved to files or should the individual elements of the nested dictionaries be saved to files?
+
 ## Related packages:
 
 - [SerializationCaches.jl](https://github.com/beacon-biosignals/SerializationCaches.jl)
