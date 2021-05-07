@@ -29,7 +29,7 @@ d[2, 2] = 3
 Normal array operations like `getindex` and `setindex!` work on `SerializedElementArray`s, but note that they involve reading from and writing to disk so will be much slower than the same operations for `Array`. Keep this in mind when using a `SerializedElementArray` and organize your code to minimizing accessing individual elements.
 
 To create an array stored on disk with undefined elements, `disk` accepts undefined `Array`s:
-```
+```julia
 using SerializedElementArrays: disk, pathname
 
 a = Array{Matrix{Float64}}(undef, 2, 3)
