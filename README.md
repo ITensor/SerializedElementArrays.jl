@@ -12,7 +12,7 @@ Install with the Julia package manager with `import Pkg; Pkg.add("SerializedElem
 
 ## Introduction
 
-This package introduces a function `disk` which transfers an `AbstractArray` in memory to one stored on disk, called a `SerializedElementArray`. The elements of the original array are serialized and saved into individual files in a randomly generated directory in the current path.
+This package introduces a function `disk` which transfers an `AbstractArray` in memory to one stored on disk, called a `SerializedElementArray`. The elements of the original array are serialized and by default are saved into individual files in a randomly generated directory inside the system's temporary directory.
 
 For example:
 ```julia
