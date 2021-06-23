@@ -97,7 +97,7 @@ disk(() -> big_array(n))
 # are the inputs to the function:
 disk(big_array, n)
 ```
-Internally, by default this version of the function `disk` will call `GC.gc(false)` internally, which performs an incremental collection of only the "young" objects in memory.
+By default this version of the function `disk` will call `GC.gc(false)` internally, which performs an incremental collection of only the "young" objects in memory.
 
 You can specify a full GC sweep with:
 ```julia
