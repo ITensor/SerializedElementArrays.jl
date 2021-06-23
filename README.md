@@ -97,7 +97,7 @@ disk(() -> big_array(n))
 # are the inputs to the function:
 disk(big_array, n)
 ```
-Internally, by default this will call `GC.gc(false)`, which performs an incremental collection of only the "young" objects in memory.
+By default this version of the function `disk` will call `GC.gc(false)` internally, which performs an incremental collection of only the "young" objects in memory.
 
 You can specify a full GC sweep with:
 ```julia
@@ -107,9 +107,9 @@ or turn off the call to `GC.gc` with:
 ```julia
 disk(big_array, n; force_gc=false)
 ```
-in which case memory will be freed automatically by Julia instead of internally in the `disk` function.
+in which case memory will be freed automatically by Julia at some later time instead of internally in the `disk` function.
 
-This allow usage of the do-block syntax:
+The version of `disk` described above, which takes a function as input, allows usage of the do-block syntax:
 ```julia
 n = 10^2
 disk(n) do n
@@ -120,6 +120,7 @@ disk(n) do n
   return [a11 a12; a21 a22]
 end
 ```
+where the anonymous function defined by the `do...end` block is implicitly passed as the first argument to `disk`.
 
 ## File locations
 

@@ -374,5 +374,4 @@ using SerializedElementArrays: disk
     @test d2[1, 2] == 1 + 2
     @test d3[1, 2] == 1 + 2
   end
-
 end
