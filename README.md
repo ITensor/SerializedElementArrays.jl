@@ -44,6 +44,8 @@ d[1, 2] = x
 ```
 When initialized from undefined `Array`s, no files are created, but elements can be set which are then written to disk.
 
+## Memory management
+
 Note that currently this package does not clear data from memory when it is stored on disk (such as in the above example, where an Array is first allocated in memory and then stored on disk). Freeing memory is handled by Julia's garbage collector. For memory to be cleared, it must become unreachable and then garbage collected. You can force this manually by assigning the Array (and any objects stored in the Array, as well as references to those objects) to an empty object such as `nothing` and then call `GC.gc()`:
 ```julia
 n = 1000
@@ -72,6 +74,8 @@ make_disk_array(10^2)
 GC.gc()
 ```
 Note that the explicit call to `GC.gc()` will be performed by Julia eventually and so is not strictly necessary, however it may be useful in situations where you are running out of memory and you want to force Julia to free memory to make more space for new allocations. 
+
+## File locations
 
 Internally, files are written to a path in the system's temporary directory created by `tempname()`. In Julia 1.4 and later, the files are cleaned up once the Julia process finishes (see the Julia documentation for [tempname](https://docs.julialang.org/en/v1/base/file/#Base.Filesystem.tempname)). You can use `disk(a; cleanup=false)` to keep the files after the process ends. However, note that because serialization is used (with the standard library module [Serialization](https://docs.julialang.org/en/v1/stdlib/Serialization/)), in general it is not guaranteed that the files can be read and written by different versions of Julia, or an instance of Julia with a different system image.
 
