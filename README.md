@@ -75,6 +75,52 @@ GC.gc()
 ```
 Note that the explicit call to `GC.gc()` will be performed by Julia eventually and so is not strictly necessary, however it may be useful in situations where you are running out of memory and you want to force Julia to free memory to make more space for new allocations. 
 
+### Experimental automatic memory management
+
+Passing a function to `disk` which returns an `Array` will allow the memory to be automatically freed, for example:
+```julia
+function big_array(n) 
+  a11 = randn(n, n)
+  a12 = randn(n, n)
+  a21 = randn(n, n)
+  a22 = randn(n, n)
+  return [a11 a12; a21 a22]
+end
+
+n = 10^2
+disk(() -> big_array(n))
+
+# Equivalently, the first argument
+# is the function that returns the Array
+# to be transferred to disk
+# and the remaining arguments
+# are the inputs to the function:
+disk(big_array, n)
+```
+Internally, by default this will call `GC.gc(false)`, which performs an incremental collection of only the "young" objects in memory.
+
+You can specify a full GC sweep with:
+```julia
+disk(big_array, n; full=true)
+```
+or turn off the call to `GC.gc` with:
+```julia
+disk(big_array, n; force_gc=false)
+```
+in which case memory will be freed automatically by Julia instead of internally in the `disk` function.
+
+This allow usage of the do-block syntax:
+```julia
+n = 10^2
+disk(n) do n
+  a11 = randn(n, n)
+  a12 = randn(n, n)
+  a21 = randn(n, n)
+  a22 = randn(n, n)
+  return [a11 a12; a21 a22]
+end
+```
+
 ## File locations
 
 Internally, files are written to a path in the system's temporary directory created by `tempname()`. In Julia 1.4 and later, the files are cleaned up once the Julia process finishes (see the Julia documentation for [tempname](https://docs.julialang.org/en/v1/base/file/#Base.Filesystem.tempname)). You can use `disk(a; cleanup=false)` to keep the files after the process ends. However, note that because serialization is used (with the standard library module [Serialization](https://docs.julialang.org/en/v1/stdlib/Serialization/)), in general it is not guaranteed that the files can be read and written by different versions of Julia, or an instance of Julia with a different system image.

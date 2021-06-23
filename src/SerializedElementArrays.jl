@@ -152,4 +152,10 @@ disk(array::AbstractArray; kw...) = SerializedElementArray(array; kw...)
 
 disk(array::SerializedElementArray; kw...) = array
 
+function disk(f::Function, args...; force_gc=true, full=false)
+  d = disk(f(args...))
+  force_gc && GC.gc(full)
+  return d
+end
+
 end

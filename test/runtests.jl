@@ -358,4 +358,21 @@ using SerializedElementArrays: disk
     d3 = disk(d2)
     @test SerializedElementArrays.pathname(d2) == SerializedElementArrays.pathname(d3)
   end
+
+  @testset "disk(::Function)" begin
+    n, m = 4, 5
+    d1 = disk(n, m) do n, m
+      [i + j for i in 1:n, j in 1:m]
+    end
+    d2 = disk(n, m; full=true) do n, m
+      [i + j for i in 1:n, j in 1:m]
+    end
+    d3 = disk(n, m; force_gc=false) do n, m
+      [i + j for i in 1:n, j in 1:m]
+    end
+    @test d1[1, 2] == 1 + 2
+    @test d2[1, 2] == 1 + 2
+    @test d3[1, 2] == 1 + 2
+  end
+
 end
